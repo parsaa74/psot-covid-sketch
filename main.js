@@ -71,6 +71,6 @@ function displayLonelinessMetric() {
   
   fill(0);
   textSize(16);
-  text(`Loneliness Score: ${lonelinessScore.toFixed(2)}`, width / 2, 20);
-  text(`People: ${people.length}`, width / 2, 40);
+  text(`Loneliness Score: ${lonelinessScore.toFixed(2)}`, width / 2, height - 40);
+  text(`People: ${people.length}`, width / 2, height - 20);
 }
