@@ -3,7 +3,9 @@ const socialDistancingRadius = 50;
 const interactionRadius = 30;
 
 function setup() {
-  createCanvas(800, 600);
+  // Create a responsive canvas that fills the browser window
+  let canvas = createCanvas(windowWidth, windowHeight);
+  canvas.style('display', 'block'); // Removes the scrollbars
   textAlign(CENTER, CENTER);
 }
 
@@ -73,4 +75,9 @@ function displayLonelinessMetric() {
   textSize(16);
   text(`Loneliness Score: ${lonelinessScore.toFixed(2)}`, width / 2, height - 40);
   text(`People: ${people.length}`, width / 2, height - 20);
+}
+
+// Add this function to handle window resizing
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
