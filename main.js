@@ -7,13 +7,14 @@ function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.style('display', 'block'); // Removes the scrollbars
   textAlign(CENTER, CENTER);
+  colorMode(HSB, 360, 100, 100, 100);
 }
 
 function draw() {
-  background(220);
+  background(220, 20, 95);
   
   for (let person of people) {
-    person.move();
+    person.update();
     person.display();
     person.interact();
   }
@@ -27,39 +28,43 @@ function mousePressed() {
 
 class Person {
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.speed = random(1, 3);
-    this.direction = p5.Vector.random2D();
+    this.pos = createVector(x, y);
+    this.vel = p5.Vector.random2D().mult(random(0.5, 2));
+    this.acc = createVector();
+    this.maxSpeed = 2;
+    this.maxForce = 0.1;
+    this.size = random(15, 25);
+    this.color = color(random(360), 80, 80);
     this.interactionTimer = 0;
+    this.wanderTheta = 0;
   }
   
-  move() {
-    this.x += this.direction.x * this.speed;
-    this.y += this.direction.y * this.speed;
-    
-    if (this.x < 0 || this.x > width) this.direction.x *= -1;
-    if (this.y < 0 || this.y > height) this.direction.y *= -1;
+  update() {
+    this.vel.mult(0.9);
+    this.acc.mult(0.1);
+    this.vel.add(this.acc);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
   }
   
   display() {
-    fill(0, 150, 255);
-    ellipse(this.x, this.y, 20, 20);
+    fill(this.color);
+    ellipse(this.pos.x, this.pos.y, this.size, this.size);
   }
   
   interact() {
     for (let other of people) {
       if (other !== this) {
-        let d = dist(this.x, this.y, other.x, other.y);
+        let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
         if (d < socialDistancingRadius) {
           // Move away from each other
-          let angle = atan2(this.y - other.y, this.x - other.x);
-          this.direction = p5.Vector.fromAngle(angle);
+          let angle = atan2(this.pos.y - other.pos.y, this.pos.x - other.pos.x);
+          this.vel = p5.Vector.fromAngle(angle);
         } else if (d < interactionRadius) {
           // Interact
           this.interactionTimer++;
           fill(255, 0, 0);
-          line(this.x, this.y, other.x, other.y);
+          line(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
         }
       }
     }
